@@ -324,6 +324,8 @@ static void do_cpu_reset(void *opaque)
             /* Jump to the entry point.  */
             env->regs[15] = info->entry & 0xfffffffe;
             env->thumb = info->entry & 1;
+	    if (CPU(cpu) == first_cpu)
+		    set_kernel_args(info);
         } else {
             if (CPU(cpu) == first_cpu) {
                 env->regs[15] = info->loader_start;

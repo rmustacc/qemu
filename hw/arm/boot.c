@@ -411,28 +411,31 @@ void arm_load_kernel(ARMCPU *cpu, struct arm_boot_info *info)
         exit(1);
     }
     info->entry = entry;
-    if (is_linux) {
-        if (info->initrd_filename) {
-            initrd_size = load_ramdisk(info->initrd_filename,
-                                       info->initrd_start,
-                                       info->ram_size -
-                                       info->initrd_start);
-            if (initrd_size < 0) {
-                initrd_size = load_image_targphys(info->initrd_filename,
-                                                  info->initrd_start,
-                                                  info->ram_size -
-                                                  info->initrd_start);
-            }
-            if (initrd_size < 0) {
-                fprintf(stderr, "qemu: could not load initrd '%s'\n",
-                        info->initrd_filename);
-                exit(1);
-            }
-        } else {
-            initrd_size = 0;
-        }
-        info->initrd_size = initrd_size;
+    if (info->initrd_filename) {
+	initrd_size = load_ramdisk(info->initrd_filename,
+	  info->initrd_start,
+	  info->ram_size -
+	  info->initrd_start);
+	if (initrd_size < 0) {
+	    fprintf(stderr, "Trying to load %s at %lu size %lu\n",
+	      info->initrd_filename, info->initrd_start,
+	      info->ram_size - info->initrd_start);
+	    initrd_size = load_image_targphys(info->initrd_filename,
+	      info->initrd_start,
+	      info->ram_size -
+	      info->initrd_start);
+	}
+	if (initrd_size < 0) {
+	    fprintf(stderr, "qemu: could not load initrd '%s'\n",
+	      info->initrd_filename);
+	    exit(1);
+	}
+    } else {
+	initrd_size = 0;
+    }
+    info->initrd_size = initrd_size;
 
+    if (is_linux) {
         bootloader[4] = info->board_id;
 
         /* for device tree boot, we pass the DTB directly in r2. Otherwise

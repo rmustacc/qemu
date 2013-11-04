@@ -10240,7 +10240,9 @@ void arm_cpu_dump_state(CPUState *cs, FILE *f, fprintf_function cpu_fprintf,
         }
         cpu_fprintf(f, "FPSCR: %08x\n", (int)env->vfp.xregs[ARM_VFP_FPSCR]);
 	cpu_fprintf(f, "c5i: %08x c5d: %08x\n",
-    	    env->cp15.c5_insn, env->cp15.c6_data);
+    	    env->cp15.c5_insn, env->cp15.c5_data);
+	cpu_fprintf(f, "c6i: %08x c6d: %08x\n",
+    	    env->cp15.c6_insn, env->cp15.c6_data);
 	cpu_fprintf(f, "USR  bank: r13 %08x r14: %08x\n",
 	    env->banked_r13[0], env->banked_r14[0]);
 	cpu_fprintf(f, "PRIV bank: r13 %08x r14: %08x\n",
